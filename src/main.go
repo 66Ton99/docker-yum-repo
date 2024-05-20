@@ -79,7 +79,7 @@ func updateRepo(path *string) {
 	cmd := "createrepo"
 	cmdArgs := []string{"--update", *path}
 
-	log.Debugf("Running command: '%s' '%s'", cmd, strings.Join(cmdArgs, " "))
+	log.Debugf("Running command: '%s %s'", cmd, strings.Join(cmdArgs, " "))
 
 	if err := exec.Command(cmd, cmdArgs...).Run(); err != nil {
 		if exitErr, ok := err.(*exec.ExitError); ok {
