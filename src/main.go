@@ -8,6 +8,7 @@ import (
 	"regexp"
 	"strings"
 	"syscall"
+	"bytes"
 
 	"github.com/rjeczalik/notify"
 	"github.com/sirupsen/logrus"
@@ -81,11 +82,14 @@ func updateRepo(path string) {
 
 	log.Debugf("Running command: '%s %s'", cmd, strings.Join(cmdArgs, " "))
 
-	if err := exec.Command(cmd, cmdArgs...).Run(); err != nil {
+	execCmd := exec.Command(cmd, cmdArgs...)
+	var errb bytes.Buffer
+	execCmd.Stderr = &errb
+	if err := execCmd.Run(); err != nil {
 		if exitErr, ok := err.(*exec.ExitError); ok {
 			status := exitErr.Sys().(syscall.WaitStatus)
 			if status != 0 {
-				log.Errorf("Could not update repo '%s', status '%d'", path, status)
+				log.Errorf("Could not update repo '%s', status '%d', error: '%s'", path, status, errb.String())
 			}
 		} else {
 			checkErrorAndLog(err)
