@@ -21,10 +21,11 @@ LABEL maintainer="Diego Gutierrez <dgutierrez1287@gmail.com>"
 RUN yum -y install epel-release && \
     yum -y update && \
     yum -y install supervisor createrepo yum-utils nginx && rm -rf /var/cache/yum && \
-    mkdir -p /repo /home/nginx /var/logs/nginx /logs/repo-scanner /logs/supervisord && \
+    mkdir -p /repo /home/nginx /logs/nginx /var/logs/nginx /logs/repo-scanner /logs/supervisord && \
     touch /var/run/nginx.pid /run/supervisord.pid /var/log/nginx/error.log && \
     chown -R nginx:nginx /repo /home/nginx /var/log /logs /var/run/nginx.pid /run/supervisord.pid
 
+COPY nginx.conf /etc/nginx/nginx.conf
 COPY --chmod=0644 supervisord.conf /etc/supervisord.conf
 
 EXPOSE 80
